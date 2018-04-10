@@ -84,16 +84,50 @@
              (form ((action
                      ,(embed/url insert-comment-handler)))
                    (input ((name "comment")))
-                   (input ((type "submit"))))))))
+                   (input ((type "submit"))))
+             (a ((href ,(embed/url back-handler)))
+                "Back to blog")))))
 
   (define (parse-comment bindings)
     (extract-binding/single 'comment bindings))
 
-  (define (insert-comment-handler a-request)
-    (post-insert-comment!
-     a-post (parse-comment (request-bindings a-request)))
-    (render-post-detail-page a-post a-request))
+  (define (insert-comment-handler request)
+    (render-confirm-add-comment-page
+     (parse-comment (request-bindings request))
+     a-post
+     request))
+
+  (define (back-handler request)
+    (render-blog-page request))
   (send/suspend/dispatch response-generator))
+
+; render-confirm-add-comment-page:
+; comment post request -> doesn't return
+; Consumes a comment that is intendet do be added to a post
+; as well as the request. If the user follows through and
+; adds comment and goes back to the display page.
+; Otherwise goes back to the detail page of the post.
+(define (render-confirm-add-comment-page a-comment a-post request)
+  (define (response-generator embed/url)
+    (response/xexpr
+     `(html (head (title "Add a comment"))
+            (body
+             (h1 "Add a comment")
+             "The comment: " (div (p ,a-comment))
+             "will be added to "
+             (div (post-title a-post))
+
+             (p (a ((href ,(embed/url yes-handler)))
+                   "Yes, add the comment."))
+             (p (a ((href ,(embed/url cancel-handler)))
+                    "No, I changed my mind"))))))
+    (define (yes-handler request)
+      (post-insert-comment! a-post a-comment)
+      (render-post-detail-page a-post request))
+
+    (define (cancel-handler request)
+      (render-post-detail-page a-post request))
+    (send/suspend/dispatch response-generator))
 
 ; render-post: post (handler -> string) -> xexpr
 ; Consumes a post, produces an xexpr fragment of the post
