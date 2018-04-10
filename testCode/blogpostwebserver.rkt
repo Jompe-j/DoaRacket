@@ -1,64 +1,130 @@
 #lang web-server/insta
- 
-; A blog is a (listof post)
+
+; A blog is a (blog posts)
+; where posts is a (list of post)
+(struct blog (posts) #:mutable)
+
 ; and a post is a (post title body)
-(struct post (title body))
+; where title is a string and body is a string
+; and comments is a (listof strings)
+(struct post (title body comments) #:mutable)
  
 ; BLOG: blog
-; The static blog.
+; The initial blog.
 (define BLOG
-  (list (post "Second Post" "This is another post")
-        (post "First Post" "This is my first post")))
+  (blog
+   (list (post "Second Post"
+               "This is another post"
+               (list))
+        (post "First Post"
+              "This is my first post"
+              (list "1st comment")))))
+
+; blog-insert-post!: blog post -> void
+; Consumes a blog and post, adds the post at the top of the blog.
+(define (blog-insert-post! a-blog a-post)
+  (set-blog-posts! a-blog
+                   (cons a-post (blog-posts a-blog))))
+
+; post-insert-comment!: post string -> void
+; Consumes a post and a comment string. As a side effect adds
+; the comment to the bottom of the post'd list of comments.
+(define (post-insert-comment! a-post a-comment)
+  (set-post-comments!
+   a-post
+   (append (post-comments a-post) (list a-comment))))
  
-; start: request -> response
+; start: request -> doesn't return
 ; Consumes a request, and produces a page that displays all of the
 ; web content.
 (define (start request)
-  (define a-blog
-    (cond [(can-parse-post? (request-bindings request))
-           (cons (parse-post (request-bindings request))
-                 BLOG)]
-          [else
-           BLOG]))
-  (render-blog-page a-blog request))
+  (render-blog-page request))
 
-; can-parse-post?: bindings -> boolean
-; Produces true if bindings contains values for 'title and 'body.
-(define (can-parse-post? bindings)
-  (and (exists-binding? 'title bindings)
-       (exists-binding? 'body bindings)))
-
-; parse-post: bindings -> post
-; Produces a bindings, and produces a post out of the bindings.
-(define (parse-post bindings)
-  (post (extract-binding/single 'title bindings)
-        (extract-binding/single 'body bindings)))
- 
-; render-blog-page: blog request -> response
-; Consumes a blog and a request, and produces an HTML page
-; of the content of the blog.
-(define (render-blog-page a-blog request)
+; render-blog-page: blog request -> doesn't return
+; Produces a HTMl page of the content of the BLOG.
+(define (render-blog-page request)
+  (define (response-generator embed/url)
   (response/xexpr
    `(html (head (title "My Blog"))
           (body
            (h1 "My Blog")
-           ,(render-posts a-blog)
-           (form
+           ,(render-posts embed/url)
+           (form ((action
+                   ,(embed/url insert-post-handler)))
             (input ((name "title")))
             (input ((name "body")))
             (input ((type "submit"))))))))
- 
-; render-post: post -> xexpr
-; Consumes a post, produces an xexpr fragment of the post.
-(define (render-post a-post)
-  `(div ((class "post"))
-        ,(post-title a-post)
-        (p ,(post-body a-post))))
- 
-; render-posts: blog -> xexpr
-; Consumes a blog, produces an xexpr fragment
-; of all its posts.
-(define (render-posts a-blog)
-  `(div ((class "posts"))
-        ,@(map render-post a-blog)))
 
+  ; parse-post: bindings -> post
+  ; Extracts a post out of the bindings
+  (define (parse-post bindings)
+    (post (extract-binding/single 'title bindings)
+          (extract-binding/single 'body bindings)
+          (list)))
+
+  (define (insert-post-handler request)
+    (blog-insert-post!
+     BLOG (parse-post (request-bindings request)))
+    (render-blog-page request))
+  (send/suspend/dispatch response-generator))
+
+; render-post-detail-page: post request -> doesn't return
+; Consumes a post and request and produces a detail page
+; of the page. The user will be able to insert new comments.
+(define (render-post-detail-page a-post request)
+  (define (response-generator embed/url)
+    (response/xexpr
+     `(html (head (title "Post details"))
+            (body
+             (h1 "Post details")
+             (h2 ,(post-title a-post))
+             (p ,(post-body a-post))
+             ,(render-as-itemized-list
+               (post-comments a-post))
+             (form ((action
+                     ,(embed/url insert-comment-handler)))
+                   (input ((name "comment")))
+                   (input ((type "submit"))))))))
+
+  (define (parse-comment bindings)
+    (extract-binding/single 'comment bindings))
+
+  (define (insert-comment-handler a-request)
+    (post-insert-comment!
+     a-post (parse-comment (request-bindings a-request)))
+    (render-post-detail-page a-post a-request))
+  (send/suspend/dispatch response-generator))
+
+; render-post: post (handler -> string) -> xexpr
+; Consumes a post, produces an xexpr fragment of the post
+; The fragment contains a link to show detailed view of the post.
+(define (render-post a-post embed/url)
+  (define (view-post-handler request)
+    (render-post-detail-page a-post request))
+  `(div ((class "post"))
+        (a ((href ,(embed/url view-post-handler)))
+           ,(post-title a-post))
+        (p ,(post-body a-post))
+        (div ,(number->string (length (post-comments a-post)))
+             " comment(s)")))
+
+; render-posts: (handler -> string) -> xexpr
+; Consumes an embed/url and produces a xexpr fragment
+; of all its posts.
+(define (render-posts embed/url)
+  (define (render-post/embed/url a-post)
+    (render-post a-post embed/url))
+  `(div ((class "posts"))
+        ,@(map render-post/embed/url (blog-posts BLOG))))
+
+; render-as-itemized-list: (listof xexpr) -> xexpr
+; Consumes a xexpr and produces a rendering
+; as an unordered list.
+(define (render-as-itemized-list fragments)
+  `(ul ,@(map render-as-item fragments)))
+
+; render-as-item: xexpr -> xexpr
+; Consumes a xexpr and produces a rendering
+; as a list item.
+(define (render-as-item a-fragment)
+  `(li ,a-fragment))
