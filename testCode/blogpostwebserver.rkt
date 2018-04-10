@@ -65,7 +65,7 @@
   (define (insert-post-handler request)
     (blog-insert-post!
      BLOG (parse-post (request-bindings request)))
-    (render-blog-page request))
+    (render-blog-page (redirect/get)))
   (send/suspend/dispatch response-generator))
 
 ; render-post-detail-page: post request -> doesn't return
@@ -123,7 +123,7 @@
                     "No, I changed my mind"))))))
     (define (yes-handler request)
       (post-insert-comment! a-post a-comment)
-      (render-post-detail-page a-post request))
+      (render-post-detail-page a-post (redirect/get)))
 
     (define (cancel-handler request)
       (render-post-detail-page a-post request))
