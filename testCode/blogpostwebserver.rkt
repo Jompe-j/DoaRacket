@@ -115,7 +115,7 @@
              (h1 "Add a comment")
              "The comment: " (div (p ,a-comment))
              "will be added to "
-             (div (post-title a-post))
+             (div ,(post-title a-post))
 
              (p (a ((href ,(embed/url yes-handler)))
                    "Yes, add the comment."))
