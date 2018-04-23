@@ -1,5 +1,9 @@
 #lang web-server/insta
 
+; Model -
+
+; Struct - user defined datatypes.
+; #:mutable makes it mutable.
 ; A blog is a (blog posts)
 ; where posts is a (list of post)
 (struct blog (posts) #:mutable)
@@ -13,15 +17,17 @@
 ; The initial blog.
 (define BLOG
   (blog
-   (list (post "Second Post"
-               "This is another post"
+   (list (post "Test post nr 2"
+               "Här står det saker"
                (list))
-        (post "First Post"
-              "This is my first post"
-              (list "1st comment")))))
+        (post "First!"
+              "first!"
+              (list "first comment!")))))
 
+; Exclamation marks - Mutation/side effect.
 ; blog-insert-post!: blog post -> void
 ; Consumes a blog and post, adds the post at the top of the blog.
+; set of set-blog-posts! is provided as the blog is #:mutable.
 (define (blog-insert-post! a-blog a-post)
   (set-blog-posts! a-blog
                    (cons a-post (blog-posts a-blog))))
@@ -33,6 +39,9 @@
   (set-post-comments!
    a-post
    (append (post-comments a-post) (list a-comment))))
+
+; End of model -
+; Webserver - 
  
 ; start: request -> doesn't return
 ; Consumes a request, and produces a page that displays all of the
@@ -45,9 +54,9 @@
 (define (render-blog-page request)
   (define (response-generator embed/url)
   (response/xexpr
-   `(html (head (title "My Blog"))
+   `(html (head (title "En webserver - test"))
           (body
-           (h1 "My Blog")
+           (h1 "Blogg")
            ,(render-posts embed/url)
            (form ((action
                    ,(embed/url insert-post-handler)))
@@ -74,9 +83,9 @@
 (define (render-post-detail-page a-post request)
   (define (response-generator embed/url)
     (response/xexpr
-     `(html (head (title "Post details"))
+     `(html (head (title "Post detaljer"))
             (body
-             (h1 "Post details")
+             (h1 "Detaljer till post")
              (h2 ,(post-title a-post))
              (p ,(post-body a-post))
              ,(render-as-itemized-list
@@ -86,7 +95,7 @@
                    (input ((name "comment")))
                    (input ((type "submit"))))
              (a ((href ,(embed/url back-handler)))
-                "Back to blog")))))
+                "Tillbaka")))))
 
   (define (parse-comment bindings)
     (extract-binding/single 'comment bindings))
@@ -110,17 +119,17 @@
 (define (render-confirm-add-comment-page a-comment a-post request)
   (define (response-generator embed/url)
     (response/xexpr
-     `(html (head (title "Add a comment"))
+     `(html (head (title "Lägg till kommentar"))
             (body
-             (h1 "Add a comment")
-             "The comment: " (div (p ,a-comment))
-             "will be added to "
+             (h1 "Lägg till kommentar")
+             "Kommentaren: " (div (p ,a-comment))
+             "kommer lägga till "
              (div ,(post-title a-post))
 
              (p (a ((href ,(embed/url yes-handler)))
-                   "Yes, add the comment."))
+                   "Ja! Lägg till!"))
              (p (a ((href ,(embed/url cancel-handler)))
-                    "No, I changed my mind"))))))
+                    "Nej Jag ändrade mig"))))))
     (define (yes-handler request)
       (post-insert-comment! a-post a-comment)
       (render-post-detail-page a-post (redirect/get)))
