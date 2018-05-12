@@ -1,40 +1,30 @@
 #lang racket
-(require net/http-client)
-(require json)
-(require "pickKInList.rkt")
-(require "decadeFind.rkt") ; for debugging
-(require "personList.rkt")
+;(require net/http-client)
+;(require json)
+;(require "pickKInList.rkt")
+;(require "decadeFind.rkt") ; for debugging
+;(require "personList.rkt")
 (require "isPersonDeadOrAlive.rkt")
 (require "whatYear.rkt")
 (require "whatDecade.rkt")
-(require "printDecAlternatives.rkt") ; for debuggin of what-year
-(require "randomList.rkt")
+;(require "printDecAlternatives.rkt") ; for debuggin of what-year
+;(require "randomList.rkt")
+(require "personListEntry.rkt")
 ; Funderingar - Gör egna moduler per fråga? Blir väldigt nestat annars?
 ; Hur hanterar man att samma värde används flera gånger? Gör let? Spelar det roll?
 
 ; Game entry point
-(define (start)
-  ; Pick random item from list of persons
-  ; should randomize a list instead.
-  
-  (let
-      ((most-certainly-almost-dead (pick-k (random (length (person-list))) (person-list))))
-   
+
+(provide start-turn)
+(define (start-turn entry)
       (begin
-        ;experiment - gör inte så. Consa in i tom lista. Vad consas in i listan?
-        
+        (is-person-dead-or-alive entry)
         (let
-            ((list-of-doa (random-list)))
-        (for ((i list-of-doa))
-          (printf "~s\n" i))
-          ; end of experiment
-        (is-person-dead-or-alive most-certainly-almost-dead)
-        (let
-            ((correct-year? (what-year most-certainly-almost-dead)))
+            ((correct-year? (what-year entry)))
         (if (eq? correct-year? #t)
           (print "Rätt")
-          (what-decade most-certainly-almost-dead))
-          (my-score))))))
+          (what-decade entry))
+          (my-score))))
 
 ; starta med en tom lista, consa in 
 
@@ -45,4 +35,10 @@
 
 ;; (displayln (string->jsexpr "{ \"qwe\": 123, \"zxc\": [ 4, 5, 6 ] }"))
 
-(start)
+;(start)
+
+;Test to start with random entry.
+(define (entry-item)
+  (let
+      ((entry-row ( person-get-random-entry)))
+  (start-turn entry-row)))
