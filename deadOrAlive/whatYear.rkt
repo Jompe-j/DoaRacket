@@ -6,8 +6,14 @@
 (provide what-year)
 
 (define (what-year input-list)
+(let
+    ((is-dead-or-alive (pick-k 0 (cdr input-list))))
+  (let
+      ((person-item (car input-list)))
   (begin
-    (printf "What year did ~a die?" (car input-list))
+    (if (eq? is-dead-or-alive 'alive)
+        (printf "What year was ~s born?" person-item)
+        (printf "What year did ~s die?" person-item))
     (let
         ((answer2 (read)))
       (if (eq? answer2 (pick-k 1 (cdr input-list)))
@@ -16,4 +22,4 @@
             #t)
           (begin
            (print "Wrong")
-           #f)))))
+           #f)))))))
