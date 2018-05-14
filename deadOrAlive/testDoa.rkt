@@ -15,16 +15,16 @@
 
 ; Game entry point
 
-(provide start-turn)
+;(provide start-turn)
 (define (start-turn entry)
-      (begin
-        (is-person-dead-or-alive entry)
-        (let
-            ((correct-year? (what-year entry)))
-        (if (eq? correct-year? #t)
+  (begin
+    (is-person-dead-or-alive entry)
+    (let
+        ((correct-year? (what-year entry)))
+      (if (eq? correct-year? #t)
           (print "Rätt")
           (what-decade entry))
-          (my-score))))
+      5))); should be points.
 
 ; starta med en tom lista, consa in 
 
@@ -38,7 +38,12 @@
 ;(start)
 
 ;Test to start with random entry.
-(define (entry-item)
-  (let
-      ((entry-row ( person-get-random-entry)))
-  (start-turn entry-row)))
+; IT'S ALIVE!!!
+(define (play-game answered-questions)
+  (if (eq? (length answered-questions) 3)
+      '()
+      (let
+          ((question (person-get-random-entry answered-questions)))
+        (cons (start-turn question)
+              (play-game (cons question
+                               answered-questions))))))
