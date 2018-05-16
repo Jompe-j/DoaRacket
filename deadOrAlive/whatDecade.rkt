@@ -24,7 +24,7 @@
           (if (eq? answer (find-correct-dec decade-alternatives))
               (begin
                 (print "yes")
-                3)
+               2)
               (begin
               (print "no!")
               0)))))))))

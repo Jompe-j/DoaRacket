@@ -27,26 +27,23 @@
   (pick-k 1 (cdr entry)))
 
 (define arguably-dead
-  '(("Hitler" . (dead 1945 Berlin))
-    ("Moussolini" . (dead 1945  Giulino))
-    ("Himmler" . (dead 1945 Lüneburg))
-    ("Obama" . (alive 1961 Uganda))))
+  '(("Adolf Hitler" . (dead 1945 Berlin))
+    ("Benito Moussolini" . (dead 1945  Giulino))
+    ("Heinrich Himmler" . (dead 1945 Lüneburg))
+    ("Barack Obama" . (alive 1961 Honolulu))
+    ("Kim Jong-un" . (alive 1952 Leningrad))))
 
-;; to be removed later
-(define (testFunc input-list)
-  (if (eq? (length input-list) 2)
-      (begin
-        ;(print input-list)
-        input-list)
-      (let
-          ((mylist (cons (person-get-random-entry input-list) input-list )))
-        (testFunc mylist))))
+; Testfunction
 
-
-(define (testTest)
+; '(("Adolf Hitler" dead 1945 Berlin) ("Benito Moussolini" dead 1945 Giulino) "Heinrich Himmler" dead 1945 Lüneburg) List of 3 different
+(define (testGet inputList)
   (let
-      ((testMyTest (testFunc '())))
-    (begin
-      ;(print (car (cdr testMyTest)))
-      ;(print (car testMyTest))
-      (cons testMyTest (person-get-random-entry '())))))
+      ((newItem (pick-k (random (length arguably-dead)) arguably-dead)))
+    (if (testOnlyOnce newItem inputList)
+        (printf "~s" newItem)
+        (testGet inputList))))
+
+(define (testOnlyOnce newItem inputList)
+  (if (eq? newItem (car inputList))
+      #f
+      (testOnlyOnce newItem (cdr inputList))))
