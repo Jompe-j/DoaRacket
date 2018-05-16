@@ -22,8 +22,12 @@
         (let
             ((answer (read)))
           (if (eq? answer (find-correct-dec decade-alternatives))
-              (print "yes")
-              (print "no!")))))))))
+              (begin
+                (print "yes")
+                3)
+              (begin
+              (print "no!")
+              0)))))))))
           ;(find-correct-dec decade-alternatives))))))))
 
 (define my-list

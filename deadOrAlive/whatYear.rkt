@@ -19,7 +19,7 @@
       (if (eq? answer2 (pick-k 1 (cdr input-list)))
           (begin
             (print "Correct.")
-            #t)
+            5)
           (begin
            (print "Wrong")
-           #f)))))))
+           0)))))))

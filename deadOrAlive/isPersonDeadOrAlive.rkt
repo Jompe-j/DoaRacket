@@ -8,5 +8,9 @@
     (let
         ((answer (read)))
       (if (eq? answer (pick-k 0 (cdr input-list)))
-          (printf "Correct!")
-          (printf "Nob.")))))
+          (begin
+            (printf "Correct!")
+            2)
+          (begin
+            (printf "Nob.")
+            0)))))

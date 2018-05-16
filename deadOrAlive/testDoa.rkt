@@ -19,18 +19,22 @@
 (define (start-turn entry)
   (begin
     (is-person-dead-or-alive entry)
-    (let
-        ((correct-year? (what-year entry)))
-      (if (eq? correct-year? #t)
-          (print "Rätt")
-          (what-decade entry))
-      5))); should be points.
+    (if (eq? (what-year entry) 0)
+        (what-decade entry)
+        (print "Rätt")) ; Hur gör jag ingenting?
+    5)); should be points.
 
 ; starta med en tom lista, consa in 
 
-
-(define (my-score)
-  (print "\n Du fick poäng"))
+(define (start-turn1 entry)
+  (cons (is-person-dead-or-alive entry)
+        (let
+            ((correct-year? (what-year entry)))
+          (cons correct-year?
+                (if (eq? correct-year? 0)
+                     (what-decade entry)
+                     null)))))
+  
 
 
 ;; (displayln (string->jsexpr "{ \"qwe\": 123, \"zxc\": [ 4, 5, 6 ] }"))
@@ -40,10 +44,10 @@
 ;Test to start with random entry.
 ; IT'S ALIVE!!!
 (define (play-game answered-questions)
-  (if (eq? (length answered-questions) 3)
+  (if (eq? (length answered-questions) 1)
       '()
       (let
           ((question (person-get-random-entry answered-questions)))
-        (cons (start-turn question)
+        (cons (start-turn1 question)
               (play-game (cons question
                                answered-questions))))))
