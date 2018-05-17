@@ -33,32 +33,7 @@
 
 
 ; Test stuff
-(define (testTurn entry)
-  (list (is-person-dead-or-alive entry)))
 
-(define (test-game answered-questions)
-  (if (eq? (length answered-questions) 4)
-      '()
-      (let
-          ((question (unique-get-random answered-questions)))
-        (cons (testTurn question)
-              (test-game (cons question
-                               answered-questions))))))
-
-(define (unique-get-random ans-que)
-  (let
-      ((new-que-obj (person-get-random-entry ans-que)))
-    (begin
-      (if (eq? (length ans-que) 0)
-          new-que-obj
-          (testFunc new-que-obj ans-que)))))
-
-(define (testFunc question ansList)
-  (if (eq? (length ansList) 0)
-      question
-      (if (eq? question (car ansList))
-          (unique-get-random ansList)
-          (testFunc question (cdr ansList)))))
 
 
   

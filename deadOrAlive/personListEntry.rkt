@@ -15,7 +15,7 @@
         ((try-if-new (lambda (input-played-list) ; Two parameters in to compare. Recursive compare between new value and first value in list until end.
                        (printf "~s\n" input-played-list))))
       (begin
-        (try-if-new new-item)
+        ;(try-if-new new-item)
         new-item))))
 
 (define (person-name entry)
