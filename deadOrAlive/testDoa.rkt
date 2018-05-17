@@ -4,12 +4,10 @@
 (require "whatYear.rkt")
 (require "whatDecade.rkt")
 (require "personListEntry.rkt")
-; Funderingar - Gör egna moduler per fråga? Blir väldigt nestat annars?
-; Hur hanterar man att samma värde används flera gånger? Gör let? Spelar det roll?
 
 ; Game entry point
 
-(provide start-turn)
+(provide game-loop)
 
 (define (start-turn entry)
   (cons (is-person-dead-or-alive entry)
@@ -22,18 +20,23 @@
   
 ;; (displayln (string->jsexpr "{ \"qwe\": 123, \"zxc\": [ 4, 5, 6 ] }"))
 
-(define (play-game answered-questions)
-  (if (eq? (length answered-questions) 4)
+
+(define (game-loop lst playedList)
+  (if (>= (length playedList) 3)
       '()
       (let
-          ((question (person-get-random-entry answered-questions)))
-        (cons (start-turn question)
-              (play-game (cons question
-                               answered-questions))))))
-
+          ((myValue (get-random-question-item lst)))
+        (cons (start-turn (cdr myValue))
+              (game-loop (car myValue)
+                      (cons (cdr myValue)
+                            playedList))))))
 
 ; Test stuff
 
-
+; replacement for turn of game.
+(define (testfunc inputstuff)
+  (begin
+    (printf "~s\n" inputstuff)
+    4))
 
   
