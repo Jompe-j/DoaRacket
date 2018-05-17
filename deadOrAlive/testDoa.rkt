@@ -9,7 +9,7 @@
 
 ; Game entry point
 
-;(provide start-turn)
+(provide start-turn)
 
 (define (start-turn entry)
   (cons (is-person-dead-or-alive entry)
@@ -41,13 +41,9 @@
       '()
       (let
           ((question (unique-get-random answered-questions)))
-        (begin
-          (printf "~s\n" question)
-          (printf "~s\n" answered-questions)
-          (printf "~s\n" (length answered-questions))
-          (cons (testTurn question)
-                (test-game (cons question
-                                 answered-questions)))))))
+        (cons (testTurn question)
+              (test-game (cons question
+                               answered-questions))))))
 
 (define (unique-get-random ans-que)
   (let
@@ -55,19 +51,14 @@
     (begin
       (if (eq? (length ans-que) 0)
           new-que-obj
-          (begin
-            (print "Fler objekt i listan, letar unikt objekt")
-            (testFunc new-que-obj ans-que))))))
+          (testFunc new-que-obj ans-que)))))
 
 (define (testFunc question ansList)
   (if (eq? (length ansList) 0)
-      (begin
-        (print "found one")
-        question)
+      question
       (if (eq? question (car ansList))
-          (begin
-            (print "Same - getting new question")
-            (unique-get-random ansList))
-          (begin
-            (print "Different, but still looking")
-            (testFunc question (cdr ansList))))))
+          (unique-get-random ansList)
+          (testFunc question (cdr ansList)))))
+
+
+  

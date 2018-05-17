@@ -6,6 +6,7 @@
 (provide person-name)
 (provide person-data-state)
 (provide person-data-year)
+(provide arguably-dead)
 
 (define (person-get-random-entry played-list)
   (let
@@ -31,7 +32,7 @@
     ("Benito Moussolini" . (dead 1945  Giulino))
     ("Heinrich Himmler" . (dead 1945 Lüneburg))
     ("Barack Obama" . (alive 1961 Honolulu))
-    ("Kim Jong-un" . (alive 1952 Leningrad))))
+    ("Vladimir Putin" . (alive 1952 Leningrad))))
 
 ; Testfunction
 
@@ -39,11 +40,20 @@
 (define (testGet inputList)
   (let
       ((newItem (pick-k (random (length arguably-dead)) arguably-dead)))
-    (if (testOnlyOnce newItem inputList)
-        (printf "~s" newItem)
-        (testGet inputList))))
+    (begin
+      (printf "start\n ~s\n" newItem)
+      (printf "~s\n\n" inputList)
+      (if (testOnlyOnce newItem inputList)
+          (printf "new line! ~s \n" newItem)
+          (testGet inputList)))))
 
 (define (testOnlyOnce newItem inputList)
-  (if (eq? newItem (car inputList))
-      #f
-      (testOnlyOnce newItem (cdr inputList))))
+  (begin
+    (if (eq? (length inputList) 0)
+        #t
+        (begin
+          (printf "Length: ~s\n" (length inputList))
+          (printf "InputList: ~s\n" inputList)
+        (if (eq? newItem (car inputList))
+            #f
+            (testOnlyOnce newItem (cdr inputList)))))))
