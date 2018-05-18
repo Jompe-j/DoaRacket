@@ -13,8 +13,8 @@
       ((person-item (person-name input-list)))
   (begin
     (if (eq? is-dead-or-alive 'alive)
-        (printf "What year was ~s born?" person-item)
-        (printf "What year did ~s die?" person-item))
+        (printf "What year was ~s born?\n" person-item)
+        (printf "What year did ~s die?\n" person-item))
     (let
         ((answer2 (read)))
       (if (eq? answer2 (person-data-year input-list))
