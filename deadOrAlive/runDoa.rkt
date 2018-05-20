@@ -9,7 +9,19 @@
 
 ; (sum-points (game-loop arguably-dead '()))
 
+;Entry point for Entire game
 (define (play-doa)
-  (begin
-    (print "Välkommen till Dead or Alive! Nu kör vi!")
-    (printf "Du fick ~s poäng!" (sum-points (game-loop arguably-dead '())))))
+  (printf "Välkommen till Dead or Alive! Nu kör vi!")
+  (printf "Du fick ~s poäng!" (sum-points (game-loop arguably-dead '()))))
+
+
+(define (save-points player-points)
+  (printf "enter your name!\n")
+  (let
+      ([player-name (read)])
+    (printf "Is ~s your name? (yes or no)\n" player-name)
+    (let
+        ([answer (read)])
+      (if (eq? answer 'yes)
+          (printf "~s" player-name)
+          (print "nope?")))))

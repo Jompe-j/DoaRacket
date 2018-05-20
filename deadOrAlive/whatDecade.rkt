@@ -1,5 +1,5 @@
 #lang racket
-(require "pickKInList.rkt")
+(require "listHandling.rkt")
 (require "decadeFind.rkt")
 (require "printDecAlternatives.rkt")
 

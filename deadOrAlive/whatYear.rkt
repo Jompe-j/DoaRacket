@@ -7,20 +7,20 @@
 (provide what-year)
 
 (define (what-year input-list)
-(let
-    ((is-dead-or-alive (person-data-state input-list)))
   (let
-      ((person-item (person-name input-list)))
-  (begin
-    (if (eq? is-dead-or-alive 'alive)
-        (printf "What year was ~s born?\n" person-item)
-        (printf "What year did ~s die?\n" person-item))
+      ((is-dead-or-alive (person-data-state input-list)))
     (let
-        ((answer2 (read)))
-      (if (eq? answer2 (person-data-year input-list))
-          (begin
-            (print "Correct.")
-            5)
-          (begin
-           (print "Wrong")
-           0)))))))
+        ([person-item (person-name input-list)])
+      (begin
+        (if (eq? is-dead-or-alive 'alive)
+            (printf "What year was ~s born?\n" person-item)
+            (printf "What year did ~s die?\n" person-item))
+        (let
+            ([answer2 (read)])
+          (if (eq? answer2 (person-data-year input-list))
+              (begin
+                (print "Correct.")
+                5)
+              (begin
+                (print "Wrong")
+                0)))))))

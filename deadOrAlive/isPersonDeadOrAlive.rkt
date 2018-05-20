@@ -1,5 +1,5 @@
 #lang racket
-(require "pickKInList.rkt")
+(require "listHandling.rkt")
 (provide is-person-dead-or-alive)
 
 (define (is-person-dead-or-alive input-list)

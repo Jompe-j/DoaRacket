@@ -1,6 +1,6 @@
 #lang racket
 
-(require "pickKInList.rkt")
+(require "listHandling.rkt")
 (provide print-dec-alternatives)
 
 (define (print-dec-alternatives input-alternatives-list)

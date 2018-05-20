@@ -1,6 +1,5 @@
 #lang racket
-
-(require "pickKInList.rkt")
+(require "listHandling.rkt")
 
 (provide person-name)
 (provide person-data-state)
@@ -18,31 +17,18 @@
   (pick-k 1 (cdr entry)))
 
 (define arguably-dead
-  '(("Adolf Hitler" . (dead 1945 Berlin))
-    ("Benito Moussolini" . (dead 1945  Giulino))
-    ("Heinrich Himmler" . (dead 1945 Lüneburg))
-    ("Barack Obama" . (alive 1961 Honolulu))
-    ("Vladimir Putin" . (alive 1952 Leningrad))))
+  '(("Adolf Hitler" . (dead 1945 "Berlin" "Germany"))
+    ("Benito Moussolini" . (dead 1945  "Giulino" "Italy"))
+    ("Heinrich Himmler" . (dead 1945 "Lüneburg" "Germany"))
+    ("Barack Obama" . (alive 1961 "Honolulu" "USA"))
+    ("Vladimir Putin" . (alive 1952 "Leningrad (Saint Petersburg)" "Russia"))
+    ("Kirk Douglas" . (alive 1916 "Amsterdam (New York)" "USA"))
+    ("Betty White" . (alive 1922 "Oak Park" "USA"))
+    (
 
 
 (define (get-random-question-item lst)
-  (remove-acc (random (length lst)) lst '()))
+  (remove-item (random (length lst)) lst '()))
 
-(define (remove-acc pos lst acc)
-  (if (<= pos 0)
-      (cons
-       (copy-acc (cdr lst) acc)
-       (car lst))
-      (remove-acc (- pos 1) (cdr lst)
-                  (cons
-                   (car lst)
-                   acc))))
 
-(define (copy-acc lst acc)
-  (if (eq? lst '())
-      acc
-      (copy-acc (cdr lst)
-                (cons
-                 (car lst)
-                 acc))))
 
