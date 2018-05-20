@@ -24,7 +24,7 @@
     ("Vladimir Putin" . (alive 1952 "Leningrad (Saint Petersburg)" "Russia"))
     ("Kirk Douglas" . (alive 1916 "Amsterdam (New York)" "USA"))
     ("Betty White" . (alive 1922 "Oak Park" "USA"))
-    (
+    ("Paul Walker" . (dead 2014 "Los Angeles" "USA"))))
 
 
 (define (get-random-question-item lst)

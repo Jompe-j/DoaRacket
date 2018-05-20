@@ -1,25 +1,27 @@
 #lang racket
 
 (require "listHandling.rkt")
+(provide update-highscore)
+(provide setup-highscore-file)
 
-(define (update-highscore input-score)
+(define (update-highscore input-name-score)
   (let
-      ([tmp-content (read-highscore)])
-    (begin
-      (print tmp-content)
-      (write-highscore (cons
-                        input-score
-                        tmp-content)))))
+      ([highscore-lst (read-highscore)])
+    (if (<= (length highscore-lst) 4)
+        (write-highscore (cons
+                          input-name-score
+                          highscore-lst))
+        (write-highscore (insert-new-highscore highscore-lst input-name-score)))))
 
 (define (write-highscore highscore-lst)
-  (let (
-        [f (open-output-file "qwerty.txt" #:mode 'text #:exists 'replace)])
+  (let
+      ([f (open-output-file "highscore.txt" #:mode 'text #:exists 'replace)])
     (begin
       (displayln highscore-lst f)    
       (close-output-port f))))
 
 (define (read-highscore)
-  (let ([r (open-input-file "qwerty.txt" #:mode 'text)])
+  (let ([r (open-input-file "highscore.txt" #:mode 'text)])
     (begin
       (let
           ([file-content (read r)])
@@ -51,10 +53,26 @@
    new-highscore
    (car (remove-item (car (cdr (cdr (find-pos lst '(name 0 -1) -1 <)))) lst '()))))
 
+(define (highscore-order lst)
+  (
+
+(define (setup-highscore-file)
+  (when (not (file-exists? "highscore.txt"))
+    (write-highscore '())))
 
 
 
+(define (print-highscore)
+  (let*
+      ([highscore-lst (read-highscore)]
+       [print-loop (lambda (highscore-lst fn)
+                     (if (eq? highscore-lst '())
+                         '()
+                         (begin
+                           (let
+                               ([
+                         (printf "~s\n" (car highscore-lst))
+                         (fn (cdr highscore-lst) fn))))])
+        (print-loop highscore-lst print-loop)))
 
-
-
-  
+Om nästa värde är mindre än det jag stoppar in.

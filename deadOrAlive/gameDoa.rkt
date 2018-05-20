@@ -24,7 +24,7 @@
 
 (define (game-loop lst playedList)
   (begin
-    (if (>= (length playedList) 4)
+    (if (>= (length playedList) 2)
         '()
         (let
             ((myValue (get-random-question-item lst)))
