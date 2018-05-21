@@ -4,14 +4,25 @@
 (provide update-highscore)
 (provide setup-highscore-file)
 
-(define (update-highscore input-name-score)
+(define (update-highscore player-highscore)
+  (write-highscore (insert-highscore(read-highscore) player-highscore 5))) 
+
+(define (insert-highscore highscore-lst input-lst max-length)
   (let
-      ([highscore-lst (read-highscore)])
-    (if (<= (length highscore-lst) 4)
-        (write-highscore (cons
-                          input-name-score
-                          highscore-lst))
-        (write-highscore (insert-new-highscore highscore-lst input-name-score)))))
+      ([copy-rest (lambda (lst max-len fn)
+                    (cond
+                      [(<= max-len 0) '()]
+                      [(null? lst) '()]
+                      [else (cons (car lst)
+                                  (fn (cdr lst) (- max-len 1) fn))]))])
+    (cond
+      [(<= max-length 0) '()]
+      [(null? highscore-lst) (list input-lst)]
+      [(< (cadar highscore-lst) (cadr input-lst))
+       (cons input-lst
+             (copy-rest highscore-lst (- max-length 1) copy-rest))]
+      [else (cons (car highscore-lst)
+                  (insert-highscore (cdr highscore-lst) input-lst (- max-length 1)))])))
 
 (define (write-highscore highscore-lst)
   (let
@@ -30,49 +41,9 @@
 
 ; String to test function.
 (define teststring
-  '((bosa 19) (grejs 18) (Assa 2) (du 5)))
+  '((bosa 19) (grejs 18) (du 5) (Assa 2)))
 
-; Function to get smallest or larges value in toplist
-; (find-pos lst '(name 0 -1) -1)
-(define (find-pos lst list-name-value-position pos high-low?)
-  (begin
-    (if (<= (length lst) 0)
-        list-name-value-position
-        (let
-            ([myName (car (car lst))]
-             [myVal (car (cdr (car lst)))]
-             [myPos (+ pos 1)])
-          (if (or
-               (eq? (car (cdr list-name-value-position)) 0)
-               (high-low? myVal (car (cdr list-name-value-position))))
-              (find-pos (cdr lst) (list myName myVal myPos) myPos high-low?)
-              (find-pos (cdr lst) list-name-value-position myPos high-low?))))))
-
-(define (insert-new-highscore lst new-highscore)
-  (cons
-   new-highscore
-   (car (remove-item (car (cdr (cdr (find-pos lst '(name 0 -1) -1 <)))) lst '()))))
-
-(define (highscore-order lst)
-  (
 
 (define (setup-highscore-file)
   (when (not (file-exists? "highscore.txt"))
     (write-highscore '())))
-
-
-
-(define (print-highscore)
-  (let*
-      ([highscore-lst (read-highscore)]
-       [print-loop (lambda (highscore-lst fn)
-                     (if (eq? highscore-lst '())
-                         '()
-                         (begin
-                           (let
-                               ([
-                         (printf "~s\n" (car highscore-lst))
-                         (fn (cdr highscore-lst) fn))))])
-        (print-loop highscore-lst print-loop)))
-
-Om nästa värde är mindre än det jag stoppar in.

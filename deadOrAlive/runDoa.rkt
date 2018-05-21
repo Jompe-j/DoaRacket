@@ -12,23 +12,22 @@
 ; ((Pooop 12) (John 11) (Bengt 11) (Sb 11) (ooo 8))
 ;Entry point for Entire game
 (define (play-doa)
-  (if (eq? (file-exists? "qwerty.txt") #f)
-      (print "no file")
-      (printf "Välkommen till Dead or Alive! Nu kör vi!\n")
-      (let
-          ([my-points (sum-points (game-loop arguably-dead '()))])
-        (begin
-          (printf "Du fick ~s poäng!" my-points )
-          (save-points my-points)))))
+  (setup-highscore-file)
+  (printf "Välkommen till Dead or Alive! Nu kör vi!\n")
+  (let
+      ([my-points (sum-points (game-loop arguably-dead '()))])
+    (begin
+      (printf "Du fick ~s poäng!" my-points )
+      (save-points my-points))))
 
 
-  (define (save-points player-points)
-    (printf "enter your name!\n")
+(define (save-points player-points)
+  (printf "enter your name!\n")
+  (let
+      ([player-name (read)])
+    (printf "Is ~s your name? (yes or no)\n" player-name)
     (let
-        ([player-name (read)])
-      (printf "Is ~s your name? (yes or no)\n" player-name)
-      (let
-          ([answer (read)])
-        (if (eq? answer 'yes)
-            (update-highscore (list player-name player-points))
-            (print "nope?")))))
+        ([answer (read)])
+      (if (eq? answer 'yes)
+          (update-highscore (list player-name player-points))
+          (print "nope?")))))
