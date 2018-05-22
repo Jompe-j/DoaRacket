@@ -1,5 +1,5 @@
 #lang racket
-(require "pickKInList.rkt")
+(require "listHandling.rkt")
 (require "decadeFind.rkt")
 (require "printDecAlternatives.rkt")
 (require "personListEntry.rkt")
@@ -8,7 +8,7 @@
 
 (define (what-year input-list)
   (let
-      ((is-dead-or-alive (person-data-state input-list)))
+      ([is-dead-or-alive (person-data-state input-list)])
     (let
         ([person-item (person-name input-list)])
       (begin
@@ -19,8 +19,8 @@
             ([answer2 (read)])
           (if (eq? answer2 (person-data-year input-list))
               (begin
-                (print "Correct.")
-                5)
+                (printf "Correct.\n")
+                3)
               (begin
-                (print "Wrong")
+                (printf "Wrong\n")
                 0)))))))
