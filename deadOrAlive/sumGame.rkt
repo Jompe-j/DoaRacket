@@ -8,11 +8,10 @@
 (define (traverse lst acc)
   (if (<= (length lst) 0)
       null
-        (let
-            ([points (add-lst (car lst) acc)])
-        (cons
-         points
-         (traverse (cdr lst) 0)))))
+      (let
+          ([points (add-lst (car lst) acc)])
+        (cons points
+              (traverse (cdr lst) 0)))))
 
 (define (add-lst lst acc)
   (let

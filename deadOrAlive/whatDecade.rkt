@@ -6,32 +6,25 @@
 (provide what-decade)
 
 (define (what-decade input-list)
-(let
-    ([is-dead-or-alive (pick-k 0 (cdr input-list))])
   (let
-      ([person-item (car input-list)])
-  (begin
-    (if (eq? is-dead-or-alive 'alive)
-        (printf "What decade was ~s born?\n" person-item)
-        (printf "What decade did ~s die?\n" person-item))
-     
-    (let
-        ([decade-alternatives (decade-find (pick-k 1 (cdr input-list)))])
-      (print-dec-alternatives decade-alternatives)
-      (begin
-        (let
-            ([answer (read)])
-          (if (eq? answer (find-correct-dec decade-alternatives))
-              (begin
-                (printf "yes\n")
-               2)
-              (begin
-              (printf "no!\n")
-              0)))))))))
-          ;(find-correct-dec decade-alternatives))))))))
-
-(define my-list
-  '("Hitler" . (alive 1941 Berli)))
+      ([is-dead-or-alive (pick-k 0 (cdr input-list))]
+       [person-item (car input-list)]
+       [decade-alternatives (decade-find (pick-k 1 (cdr input-list)))])
+    (begin
+      (if (eq? is-dead-or-alive 'alive)
+          (printf "What decade was ~s born?\n" person-item)
+          (printf "What decade did ~s die?\n" person-item))
+        (print-dec-alternatives decade-alternatives)
+        (begin
+          (let
+              ([answer (read)])
+            (if (eq? answer (find-correct-dec decade-alternatives))
+                (begin
+                  (printf "yes\n")
+                  2)
+                (begin
+                  (printf "no!\n")
+                  0)))))))
 
 (define (find-correct-dec input-dec-alternatives)
   (begin
@@ -47,6 +40,6 @@
                                  (begin
                                    (printf "~s\n" (caar lst))
                                    (fn (cdr lst) fn))))])
-  (begin
-    (printf "Choose from either of:\n")
-    (print-alternatives input-alternatives-list print-alternatives))))
+    (begin
+      (printf "Choose from either of:\n")
+      (print-alternatives input-alternatives-list print-alternatives))))

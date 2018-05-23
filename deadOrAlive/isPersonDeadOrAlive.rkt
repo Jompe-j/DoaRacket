@@ -4,13 +4,13 @@
 
 (define (is-person-dead-or-alive input-list)
   (begin
-    (printf "Is ~a dead or alive?" (car input-list))
+    (printf "Is ~a dead or alive?\n" (car input-list))
     (let
-        ((answer (read)))
+        ([answer (read)])
       (if (eq? answer (pick-k 0 (cdr input-list)))
           (begin
-            (printf "Correct!")
+            (printf "Correct!\n")
             2)
           (begin
-            (printf "Nob.")
+            (printf "Wrong!\n")
             0)))))

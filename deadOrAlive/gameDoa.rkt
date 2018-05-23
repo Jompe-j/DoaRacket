@@ -13,7 +13,7 @@
   (cons
    (is-person-dead-or-alive entry)
    (let
-       ((correct-year? (what-year entry)))
+       ([correct-year? (what-year entry)])
      (list correct-year?
            (if (eq? correct-year? 0)
                (what-decade entry)
@@ -26,10 +26,7 @@
     (if (>= (length playedList) 3)
         '()
         (let
-            ((myValue (get-random-question-item lst)))
-          (cons
-           (turn-loop (cdr myValue))
-           (game-loop (car myValue)
-                      (cons
-                       (cdr myValue)
-                       playedList)))))))
+            ([myValue (get-random-question-item lst)])
+          (cons(turn-loop (cdr myValue))
+               (game-loop (car myValue) (cons (cdr myValue)
+                                              playedList)))))))
