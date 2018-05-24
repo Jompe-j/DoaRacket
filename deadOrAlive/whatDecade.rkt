@@ -1,38 +1,44 @@
 #lang racket
 (require "listHandling.rkt")
 (require "decadeFind.rkt")
-(require "printDecAlternatives.rkt")
+(require "personListEntry.rkt")
+;(require "printDecAlternatives.rkt")
 
 (provide what-decade)
 
-(define (what-decade input-list)
-  (let
-      ([is-dead-or-alive (pick-k 0 (cdr input-list))]
-       [person-item (car input-list)]
-       [decade-alternatives (decade-find (pick-k 1 (cdr input-list)))])
-    (begin
-      (if (eq? is-dead-or-alive 'alive)
-          (printf "What decade was ~s born?\n" person-item)
-          (printf "What decade did ~s die?\n" person-item))
-        (print-dec-alternatives decade-alternatives)
-        (begin
-          (let
-              ([answer (read)])
-            (if (eq? answer (find-correct-dec decade-alternatives))
-                (begin
-                  (printf "yes\n")
-                  2)
-                (begin
-                  (printf "no!\n")
-                  0)))))))
+(define (what-decade lst input-reader)
+  (let*
+      ([is-dead-or-alive (person-data-state lst)]
+       [person-item (car lst)]
+       [decade-alternatives (decade-find (person-data-year lst))]
+       [verify-answer (lambda (fn)
+                        (if (eq? is-dead-or-alive 'alive)
+                            (printf "What decade was ~s born?\n" person-item)
+                            (printf "What decade did ~s die?\n" person-item))
+                        (print-dec-alternatives decade-alternatives)
+                        (let
+                            ([answer (input-reader)])
+                          (if (number? answer)
+                              (if (eq? answer (find-correct-dec decade-alternatives))
+                                  (begin
+                                    (printf "yes\n")
+                                    2)
+                                  (begin
+                                    (printf "no!\n")
+                                    0))
+                              (begin
+                                (printf "Invalid input\n")
+                                (fn fn)))))])
+    (verify-answer verify-answer)))
+                           
 
 (define (find-correct-dec input-dec-alternatives)
   (begin
     (if (eq? (cadar input-dec-alternatives) #t)
-        (car (car input-dec-alternatives))
+        (caar input-dec-alternatives)
         (find-correct-dec (cdr input-dec-alternatives)))))
 
-(define (print-dec-alternatives input-alternatives-list)
+(define (print-dec-alternatives input-lst)
   (let
       ([print-alternatives (lambda (lst fn)
                              (if (eq? lst '())
@@ -40,6 +46,5 @@
                                  (begin
                                    (printf "~s\n" (caar lst))
                                    (fn (cdr lst) fn))))])
-    (begin
-      (printf "Choose from either of:\n")
-      (print-alternatives input-alternatives-list print-alternatives))))
+    (printf "Choose from either of:\n")
+    (print-alternatives input-lst print-alternatives)))

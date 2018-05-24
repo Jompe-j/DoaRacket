@@ -1,6 +1,7 @@
 #lang racket
 
 (require "listHandling.rkt")
+
 (provide save-points)
 (provide setup-highscore-file)
 (provide print-highscore)
@@ -12,28 +13,27 @@
 
 (define (print-highscore)
   (let
-      ([highscore-lst (read-highscore)])
+      ([highscore-lst (read-highscore)]
+       [print-lst (lambda (lst k fn)
+                    (if (eq? lst '())
+                        (printf "\n")
+                        (begin
+                          (printf "~s: ~s ~s\n" k (caar lst) (cadar lst))
+                          (fn (cdr lst) (+ k 1) fn))))])
     (if (eq? highscore-lst '())
         (printf "Du är först att spela!\n")
-        (let
-            ([print-lst (lambda (lst k fn)
-                          (if (eq? lst '())
-                              (printf "\n")
-                              (begin
-                                (printf "~s: ~s ~s\n" k (caar lst) (cadar lst))
-                                (fn (cdr lst) (+ k 1) fn))))])
-          (begin
-            (printf "Fem i topp!\n")
-            (print-lst highscore-lst 1 print-lst))))))
+        (begin
+          (printf "Fem i topp!\n")
+          (print-lst highscore-lst 1 print-lst)))))
               
 
-(define (save-points player-points)
+(define (save-points player-points input-reader)
   (printf "enter your name!\n")
   (let
-      ([player-name (read)])
+      ([player-name (input-reader)])
     (printf "Is ~s your name? (yes or no)\n" player-name)
     (let
-        ([answer (read)])
+        ([answer (input-reader)])
       (if (eq? answer 'yes)
           (update-highscore (list player-name player-points))
           (print "nope?")))))
@@ -65,21 +65,13 @@
 (define (write-highscore highscore-lst)
   (let
       ([f (open-output-file "highscore.txt" #:mode 'text #:exists 'replace)])
-    (begin
       (displayln highscore-lst f)    
-      (close-output-port f))))
+      (close-output-port f)))
 
 ; Read file.
 (define (read-highscore)
   (let ([r (open-input-file "highscore.txt" #:mode 'text)])
-    (begin
       (let
           ([file-content (read r)])
         (close-input-port r)
-        file-content))))
-
-
-
-; String to test function.
-(define teststring
-  '((bosa 19) (grejs 18) (du 5) (Assa 2)))
+        file-content)))
