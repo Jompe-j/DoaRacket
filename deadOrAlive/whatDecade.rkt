@@ -1,8 +1,5 @@
 #lang racket
-(require "listHandling.rkt")
-(require "decadeFind.rkt")
 (require "personListEntry.rkt")
-;(require "printDecAlternatives.rkt")
 
 (provide what-decade)
 
@@ -11,14 +8,15 @@
       ([is-dead-or-alive (person-data-state lst)]
        [person-item (car lst)]
        [decade-alternatives (decade-find (person-data-year lst))]
-       [verify-answer (lambda (fn)
+       [verify-answer (lambda (fn i)
                         (if (eq? is-dead-or-alive 'alive)
                             (printf "What decade was ~s born?\n" person-item)
                             (printf "What decade did ~s die?\n" person-item))
                         (print-dec-alternatives decade-alternatives)
                         (let
                             ([answer (input-reader)])
-                          (if (number? answer)
+                          (if (or (number? answer)
+                                  (>= i 2))
                               (if (eq? answer (find-correct-dec decade-alternatives))
                                   (begin
                                     (printf "yes\n")
@@ -28,8 +26,8 @@
                                     0))
                               (begin
                                 (printf "Invalid input\n")
-                                (fn fn)))))])
-    (verify-answer verify-answer)))
+                                (fn fn (+ i 1))))))])
+    (verify-answer verify-answer 0)))
                            
 
 (define (find-correct-dec input-dec-alternatives)
@@ -48,3 +46,21 @@
                                    (fn (cdr lst) fn))))])
     (printf "Choose from either of:\n")
     (print-alternatives input-lst print-alternatives)))
+
+(define (decade-find input-year)
+  (let*
+      ([decade (lambda (x)
+                 (* (quotient x 10) 10))]
+       [same-decade? (lambda (x y)
+                       (if (eq? (decade x) (decade y))
+                           #t
+                           #f))])
+    (list
+     (list (decade (-
+                    input-year
+                    5))
+           (same-decade? input-year (- input-year 5)))
+     (list (decade (+
+                    input-year
+                    5))
+           (same-decade? input-year (+ input-year 5))))))

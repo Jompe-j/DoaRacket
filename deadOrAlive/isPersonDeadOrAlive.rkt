@@ -7,11 +7,12 @@
 (define (is-person-dead-or-alive input-list input-reader)
   (let*
       ([person-item (car input-list)]
-       [verify-answer (lambda (fn)
+       [verify-answer (lambda (fn i)
                           (printf "Is ~a dead or alive?\n" (car input-list))
                           (let
                               ([answer (input-reader)])
-                            (if (member answer '(dead alive))
+                            (if (or (member answer '(dead alive))
+                                    (>= i 2))
                                 (if (eq? answer (person-data-state input-list))
                                     (begin
                                       (printf "Correct\n")
@@ -21,6 +22,6 @@
                                       0))
                                 (begin
                                   (printf "Invalid input!\n")
-                                  (fn fn)))))])
-    (verify-answer verify-answer)))
+                                  (fn fn (+ i 1))))))])
+    (verify-answer verify-answer 0)))
 
