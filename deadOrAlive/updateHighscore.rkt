@@ -1,19 +1,21 @@
 #lang racket
 
 (require "listHandling.rkt")
+(require "gameSettings.rkt")
 
 (provide save-points)
 (provide setup-highscore-file)
 (provide print-highscore)
+(provide read-highscore)
 
 ; Use write-highscore to setup file if it does not exist.
-(define (setup-highscore-file)
-  (when (not (file-exists? "highscore.txt"))
-    (write-highscore '())))
+(define (setup-highscore-file path-name)
+  (when (not (file-exists? path-name))
+    (write-highscore '() path-name)))
 
-(define (print-highscore)
+(define (print-highscore path-name)
   (let
-      ([highscore-lst (read-highscore)]
+      ([highscore-lst (read-highscore path-name)]
        [print-lst (lambda (lst k fn)
                     (if (eq? lst '())
                         (printf "\n")
@@ -27,19 +29,25 @@
           (print-lst highscore-lst 1 print-lst)))))
               
 
-(define (save-points player-points input-reader)
-  (printf "enter your name!\n")
+(define (save-points player-points input-reader path-name max-length)
   (let
-      ([player-name (input-reader)])
-    (printf "Is ~s your name? (yes or no)\n" player-name)
-    (let
-        ([answer (input-reader)])
-      (if (eq? answer 'yes)
-          (update-highscore (list player-name player-points))
-          (print "nope?")))))
+      ([score-lst (read-highscore path-name)]
+       [lowest-score (lambda (lst fn)
+                       (if (<= (length lst) 1)
+                           (cadar lst)
+                           (fn (cdr lst) fn)))])
+    (if (and (> (length score-lst) 0)
+             (and (>= (length score-lst) max-length)
+                  (<= player-points (lowest-score score-lst lowest-score))))
+        (printf "You did not make it to the top 5!\n")
+        (begin
+          (printf "enter your name!\n")
+          (let
+              ([player-name (input-reader)])
+            (update-highscore (list player-name player-points) path-name max-length))))))
 
-(define (update-highscore player-highscore)
-  (write-highscore (insert-highscore(read-highscore) player-highscore 5))) 
+(define (update-highscore player-highscore path-name max-length)
+  (write-highscore (insert-highscore(read-highscore path-name) player-highscore max-length) path-name)) 
 
 ; Insert new highscore in correct position in highscore list.
 (define (insert-highscore highscore-lst input-lst max-length)
@@ -62,16 +70,25 @@
 
 
 ; Write highscore to file. Re-write file each time. If it does not exist it is created.
-(define (write-highscore highscore-lst)
+(define (write-highscore highscore-lst path-name)
   (let
-      ([f (open-output-file "highscore.txt" #:mode 'text #:exists 'replace)])
-      (displayln highscore-lst f)    
-      (close-output-port f)))
+      ([f (open-output-file path-name #:mode 'text #:exists 'replace)])
+    (displayln highscore-lst f)    
+    (close-output-port f)))
 
 ; Read file.
-(define (read-highscore)
-  (let ([r (open-input-file "highscore.txt" #:mode 'text)])
-      (let
-          ([file-content (read r)])
-        (close-input-port r)
-        file-content)))
+(define (read-highscore path-name)
+  (let ([r (open-input-file path-name #:mode 'text)])
+    (let
+        ([file-content (read r)])
+      (close-input-port r)
+      file-content)))
+
+(define (lowest path-name)
+  (let
+      ([score-lst (read-highscore path-name)]
+       [lowest-score (lambda (lst fn)
+                       (if (<= (length lst) 1)
+                           (cadar lst)
+                           (fn (cdr lst) fn)))])
+    (lowest-score score-lst lowest-score)))

@@ -10,6 +10,15 @@
 
 (provide game-loop)
 
+(define (game-loop lst playedList)
+  (if (>= (length playedList) 3)
+      '()
+      (let
+          ([myValue (get-random-question-item lst)])
+        (cons (turn-loop (cdr myValue))
+              (game-loop (car myValue) (cons (cdr myValue)
+                                             playedList))))))
+
 (define (turn-loop entry)
   (cons (is-person-dead-or-alive entry string-reader)
         (let
@@ -20,11 +29,4 @@
   
 
 
-(define (game-loop lst playedList)
-  (if (>= (length playedList) 3)
-      '()
-      (let
-          ([myValue (get-random-question-item lst)])
-        (cons(turn-loop (cdr myValue))
-             (game-loop (car myValue) (cons (cdr myValue)
-                                            playedList))))))
+
