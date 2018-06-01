@@ -20,9 +20,10 @@
   '("Nomen Nescio" dead))
 
 ; Tests return void if passed.
+(test-begin
 (check-eq? (is-person-dead-or-alive lst invalid-input) 0)
 
 (check-eq? (is-person-dead-or-alive lst valid-wrong-input) 0)
 
-(check-eq? (is-person-dead-or-alive lst valid-correct-input) 2)
+(check-eq? (is-person-dead-or-alive lst valid-correct-input) 2))
 

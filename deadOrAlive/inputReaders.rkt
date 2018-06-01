@@ -4,7 +4,7 @@
 (provide number-reader)
 
 (define (string-reader)
-  (string->symbol (string-downcase (read-line))))
+  (string->symbol (string-trim (string-downcase (read-line)) "\r" #:right? #t)))
 
 (define (number-reader)
-  (string->number (read-line) 10 'number-or-false))
+  (string->number (string-trim (read-line) "\r" #:right? #t) 10 'number-or-false))

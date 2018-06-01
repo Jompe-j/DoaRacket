@@ -10,6 +10,7 @@
 
 (provide game-loop)
 
+; Game-loop summarizes, together with turn-loop, the players score from each question.
 (define (game-loop lst playedList)
   (if (>= (length playedList) 3)
       '()

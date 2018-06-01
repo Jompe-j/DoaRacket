@@ -8,6 +8,7 @@
 (define (invalid-input)
   "1930")
 
+;; Wrong but Valid
 (define (valid-wrong-input)
   1930)
 
@@ -23,12 +24,13 @@
 
 ; Tests return void if passed
 ;; what-decade
-(check-eq? (what-decade lst invalid-input) 0)
+(test-begin
+ (check-eq? (what-decade lst invalid-input) 0)
 
-(check-eq? (what-decade lst valid-wrong-input) 0)
+ (check-eq? (what-decade lst valid-wrong-input) 0)
 
-(check-eq? (what-decade lst valid-correct-input) 2)
+ (check-eq? (what-decade lst2 valid-wrong-input) 0)
 
-(check-eq? (what-decade lst2 valid-wrong-input) 0)
+ (check-eq? (what-decade lst valid-correct-input) 2)
 
-(check-eq? (what-decade lst2 valid-correct-input) 2)
+ (check-eq? (what-decade lst2 valid-correct-input) 2))

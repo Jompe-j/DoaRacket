@@ -17,3 +17,4 @@
       ([my-points (sum-points (game-loop arguably-dead '()))])
       (printf "You got ~s points!\n" my-points )
       (save-points my-points string-reader path/name highscore-length)))
+(play-doa)
