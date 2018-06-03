@@ -4,6 +4,7 @@
 
 (provide what-year)
 
+; Ask what year person was born/died. Takes user input and returns score.
 (define (what-year input-list input-reader)
   (let*
       ([is-dead-or-alive (person-data-state input-list)]

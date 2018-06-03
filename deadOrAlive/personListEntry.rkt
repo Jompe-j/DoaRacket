@@ -7,12 +7,15 @@
 (provide arguably-dead)
 (provide get-random-question-item)
 
+; Find name of entry.
 (define (person-name entry)
   (car entry))
 
+; Find dead or alive of entry.
 (define (person-data-state entry)
   (pick-k 0 (cdr entry)))
 
+; Find year of entry.
 (define (person-data-year entry)
   (pick-k 1 (cdr entry)))
 
@@ -27,6 +30,7 @@
     ("Paul Walker" . (dead 2014 "Los Angeles" "USA"))))
 
 
+; Get random item from list.
 (define (get-random-question-item lst)
   (remove-item (random (length lst)) lst '()))
 

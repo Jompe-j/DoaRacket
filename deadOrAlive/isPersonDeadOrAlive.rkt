@@ -4,6 +4,7 @@
 (require "personListEntry.rkt")
 (provide is-person-dead-or-alive)
 
+; Ask what year person was born or died. Take user input and return score.
 (define (is-person-dead-or-alive input-list input-reader)
   (let*
       ([person-item (car input-list)]

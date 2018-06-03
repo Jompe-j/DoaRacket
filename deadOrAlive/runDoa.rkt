@@ -15,6 +15,12 @@
   (print-highscore path/name)
   (let
       ([my-points (sum-points (game-loop arguably-dead '()))])
-      (printf "You got ~s points!\n" my-points )
-      (save-points my-points string-reader path/name highscore-length)))
+    (printf "You got ~s points!\n" my-points )
+    (save-points my-points string-reader path/name highscore-length)
+    (printf "Do you want to play again? (yes or no)")
+    (let
+        ([play-again (string-reader)])
+      (if (eq? play-again 'yes)
+          (play-doa)
+          (exit)))))
 (play-doa)

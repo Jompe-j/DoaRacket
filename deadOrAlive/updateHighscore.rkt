@@ -13,6 +13,7 @@
   (when (not (file-exists? path-name))
     (write-highscore '() path-name)))
 
+; Print highscore list if there is such a list.
 (define (print-highscore path-name)
   (let
       ([highscore-lst (read-highscore path-name)]
@@ -23,12 +24,12 @@
                           (printf "~s: ~s ~s\n" k (caar lst) (cadar lst))
                           (fn (cdr lst) (+ k 1) fn))))])
     (if (eq? highscore-lst '())
-        (printf "Du är först att spela!\n")
+        (printf "You are the first player!\n")
         (begin
-          (printf "Fem i topp!\n")
+          (printf "Top five!\n")
           (print-lst highscore-lst 1 print-lst)))))
               
-
+; Save points if points are high enuough
 (define (save-points player-points input-reader path-name max-length)
   (let
       ([score-lst (read-highscore path-name)]
@@ -46,6 +47,7 @@
               ([player-name (input-reader)])
             (update-highscore (list player-name player-points) path-name max-length))))))
 
+; Update highscore by inserting in correct position.
 (define (update-highscore player-highscore path-name max-length)
   (write-highscore (insert-highscore(read-highscore path-name) player-highscore max-length) path-name)) 
 
@@ -84,11 +86,3 @@
       (close-input-port r)
       file-content)))
 
-(define (lowest path-name)
-  (let
-      ([score-lst (read-highscore path-name)]
-       [lowest-score (lambda (lst fn)
-                       (if (<= (length lst) 1)
-                           (cadar lst)
-                           (fn (cdr lst) fn)))])
-    (lowest-score score-lst lowest-score)))

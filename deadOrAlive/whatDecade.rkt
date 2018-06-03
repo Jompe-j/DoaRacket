@@ -3,6 +3,7 @@
 
 (provide what-decade)
 
+; Ask what decade person was born / died. Take user input and return score.
 (define (what-decade lst input-reader)
   (let*
       ([is-dead-or-alive (person-data-state lst)]
@@ -10,8 +11,8 @@
        [decade-alternatives (decade-find (person-data-year lst))]
        [verify-answer (lambda (fn i)
                         (if (eq? is-dead-or-alive 'alive)
-                            (printf "What decade was ~s born?\n" person-item)
-                            (printf "What decade did ~s die?\n" person-item))
+                            (printf "What decade was ~a born?\n" person-item)
+                            (printf "What decade did ~a die?\n" person-item))
                         (print-dec-alternatives decade-alternatives)
                         (let
                             ([answer (input-reader)])
@@ -19,10 +20,10 @@
                                   (>= i 2))
                               (if (eq? answer (find-correct-dec decade-alternatives))
                                   (begin
-                                    (printf "yes\n")
+                                    (printf "Correct!\n")
                                     2)
                                   (begin
-                                    (printf "no!\n")
+                                    (printf "Wrong!\n")
                                     0))
                               (begin
                                 (printf "Invalid input\n")
@@ -30,12 +31,14 @@
     (verify-answer verify-answer 0)))
                            
 
+; Set correct decade based on year of birth/death.
 (define (find-correct-dec input-dec-alternatives)
   (begin
     (if (eq? (cadar input-dec-alternatives) #t)
         (caar input-dec-alternatives)
         (find-correct-dec (cdr input-dec-alternatives)))))
 
+; Print the decade alternatives available. 
 (define (print-dec-alternatives input-lst)
   (let
       ([print-alternatives (lambda (lst fn)
@@ -47,6 +50,7 @@
     (printf "Choose from either of:\n")
     (print-alternatives input-lst print-alternatives)))
 
+; Generates decade from year of birth/death
 (define (decade-find input-year)
   (let*
       ([decade (lambda (x)

@@ -10,7 +10,8 @@
 
 (provide game-loop)
 
-; Game-loop summarizes, together with turn-loop, the players score from each question.
+; Game-loop builds a score list of the lists from from each completed turn-loop.
+; Returns the score list
 (define (game-loop lst playedList)
   (if (>= (length playedList) 3)
       '()
@@ -20,6 +21,8 @@
               (game-loop (car myValue) (cons (cdr myValue)
                                              playedList))))))
 
+; Turn-loop iterates over entry object and calls functions to ask questions.
+; Function recursively build a score list for each entry object passed to each question.
 (define (turn-loop entry)
   (cons (is-person-dead-or-alive entry string-reader)
         (let

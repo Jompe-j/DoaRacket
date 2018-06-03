@@ -12,6 +12,7 @@
                    (cons (car lst)
                          acc))))
 
+; Copy the rest of the list
 (define (copy-rest lst acc)
   (if (eq? lst '())
       acc
@@ -20,6 +21,7 @@
                        acc))))
 
 
+; Find element in position k in list.
 (define (pick-k k lst)
   (if (eq? k 0)
       (car lst)
